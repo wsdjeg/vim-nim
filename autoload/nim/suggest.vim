@@ -31,13 +31,13 @@ function! s:NimSuggest.on_exit()
 endfunction
 
 
-function! suggest#CreateJob(useV2, file, callbacks)
+function! nim#suggest#CreateJob(useV2, file, callbacks)
     return jobstart([g:nvim_nim_exec_nimsuggest, '--stdin', (a:useV2 ? '--v2' : ''), a:file], a:callbacks)
 endfunction
 
 
 " TODO: Refactor combine (1)
-function! suggest#NewKnown(command, sync, useV2, file, line, col, handler)
+function! nim#suggest#NewKnown(command, sync, useV2, file, line, col, handler)
     let result = copy(s:NimSuggest)
     let result.lines = []
     let result.file = a:file
@@ -59,7 +59,7 @@ function! suggest#NewKnown(command, sync, useV2, file, line, col, handler)
         endif
     else
         call util#StartQuery()
-        let result.job = suggest#CreateJob(a:useV2, result.file, result)
+        let result.job = nim#suggest#CreateJob(a:useV2, result.file, result)
         if result.job > 0
             call jobsend(result.job, query . "\nquit\n")
         else
@@ -70,6 +70,7 @@ function! suggest#NewKnown(command, sync, useV2, file, line, col, handler)
 endfunction
 
 
-function! suggest#New(command, sync, useV2, handler)
-    return suggest#NewKnown(a:command, a:sync, a:useV2, expand("%:p"), line("."), col("."), a:handler)
+function! nim#suggest#New(command, sync, useV2, handler)
+    return nim#suggest#NewKnown(a:command, a:sync, a:useV2, expand("%:p"), line("."), col("."), a:handler)
 endfunction
+

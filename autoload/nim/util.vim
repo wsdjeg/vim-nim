@@ -5,37 +5,37 @@ set cpo&vim
 
 
 let s:idtypes = {
-            \ 'skProc':         ["p", "Function"],
-            \ 'skTemplate':     ["t", "Template"],
-            \ 'skType':         ["T", "Type"],
-            \ 'skMacro':        ["M", "Macro"],
-            \ 'skMethod':       ["m", "Method"],
-            \ 'skField':        ["field", "Field"],
-            \ 'skAlias':        ["a", "Alias"],
-            \ 'skConditional':  ["c", "Conditional"],
-            \ 'skConst':        ["C", "Constant"],
-            \ 'skConverter':    ["c", "Converter"],
-            \ 'skDynLib':       ["d", "Dynamic library"],
-            \ 'skEnumField':    ["e", "Enum field"],
-            \ 'skForVar':       ["l", "Loop variable"],
-            \ 'skGenericParam': ["g", "Generic parameter"],
-            \ 'skGlobalVar':    ["g", "Global variable"],
-            \ 'skGlobalLet':    ["g", "Global constant"],
-            \ 'skIterator':     ["i", "Iterator"],
-            \ 'skLabel':        ["l", "Label"],
-            \ 'skLet':          ["r", "Runtime constant"],
-            \ 'skModule':       ["m", "Module"],
-            \ 'skPackage':      ["p", "Package"],
-            \ 'skParam':        ["p", "Parameter"],
-            \ 'skResult':       ["r", "Result"],
-            \ 'skStub':         ["s", "Stub"],
-            \ 'skTemp':         ["t", "Temporary"],
-            \ 'skUnknown':      ["u", "Unknown"],
-            \ 'skVar':          ["v", "Variable"],
+            \ 'skProc':         ['p', 'Function'],
+            \ 'skTemplate':     ['t', 'Template'],
+            \ 'skType':         ['T', 'Type'],
+            \ 'skMacro':        ['M', 'Macro'],
+            \ 'skMethod':       ['m', 'Method'],
+            \ 'skField':        ['field', 'Field'],
+            \ 'skAlias':        ['a', 'Alias'],
+            \ 'skConditional':  ['c', 'Conditional'],
+            \ 'skConst':        ['C', 'Constant'],
+            \ 'skConverter':    ['c', 'Converter'],
+            \ 'skDynLib':       ['d', 'Dynamic library'],
+            \ 'skEnumField':    ['e', 'Enum field'],
+            \ 'skForVar':       ['l', 'Loop variable'],
+            \ 'skGenericParam': ['g', 'Generic parameter'],
+            \ 'skGlobalVar':    ['g', 'Global variable'],
+            \ 'skGlobalLet':    ['g', 'Global constant'],
+            \ 'skIterator':     ['i', 'Iterator'],
+            \ 'skLabel':        ['l', 'Label'],
+            \ 'skLet':          ['r', 'Runtime constant'],
+            \ 'skModule':       ['m', 'Module'],
+            \ 'skPackage':      ['p', 'Package'],
+            \ 'skParam':        ['p', 'Parameter'],
+            \ 'skResult':       ['r', 'Result'],
+            \ 'skStub':         ['s', 'Stub'],
+            \ 'skTemp':         ['t', 'Temporary'],
+            \ 'skUnknown':      ['u', 'Unknown'],
+            \ 'skVar':          ['v', 'Variable'],
             \ }
 
 
-function! util#FirstNonEmpty(lines)
+function! nim#util#FirstNonEmpty(lines) abort
     for line in a:lines
         if len(line) > 0
             return line
@@ -44,7 +44,7 @@ function! util#FirstNonEmpty(lines)
 endfunction
 
 
-function! util#FirstNonEmpty(lines)
+function! nim#util#FirstNonEmpty(lines) abort
     for line in a:lines
         if len(line) > 0
             return line
@@ -53,8 +53,8 @@ function! util#FirstNonEmpty(lines)
 endfunction
 
 
-function! util#MemFilePath(file)
-    if !exists("b:nvim_tmpfile")
+function! nim#util#MemFilePath(file) abort
+    if !exists('b:nvim_tmpfile')
         let b:nvim_tmpfile = tempname()
     endif
     return b:nvim_tmpfile
@@ -62,21 +62,21 @@ endfunction
 
 
 " Writes current buffer into a memfile
-function! util#WriteMemfile()
-    let memfile = util#MemFilePath(expand("%:p"))
+function! nim#util#WriteMemfile()
+    let memfile = nim#util#MemFilePath(expand("%:p"))
     call writefile(getline(1, '$'), memfile)
     return memfile
 endfunction
 
 
-function! util#JumpToWindow(window, line, col)
+function! nim#util#JumpToWindow(window, line, col)
     execute ":" . a:window . "wincmd w"
     execute ":" . a:line
     execute ":norm " . (a:col) . "|"
 endfunction
 
 
-function! util#JumpToLocation(file, line, col)
+function! nim#util#JumpToLocation(file, line, col)
     if expand("%:p") != a:file
         execute ":e! " . a:file
     endif
@@ -85,11 +85,11 @@ function! util#JumpToLocation(file, line, col)
 endfunction
 
 
-function! util#JumpFromQuickfix(shouldReturn)
+function! nim#util#JumpFromQuickfix(shouldReturn)
     let [file, location, _] = split(getline(line(".")), "|")
     let [l, c] = split(location, " col ")
     wincmd p
-    call util#JumpToLocation(file, l, c)
+    call nim#util#JumpToLocation(file, l, c)
     if a:shouldReturn
         norm zt
         wincmd p
@@ -97,7 +97,7 @@ function! util#JumpFromQuickfix(shouldReturn)
 endfunction
 
 
-function! util#StartQuery()
+function! nim#util#StartQuery()
     " echohl Comment | echo "..."
 endfunction
 
@@ -107,7 +107,7 @@ function! s:GetModule(path)
 endfunction
 
 
-function! util#ParseV1(line)
+function! nim#util#ParseV1(line)
     let res = split(a:line, "	")
     let path = split(res[2], "\\.")
     let result = {
@@ -129,7 +129,7 @@ function! util#ParseV1(line)
 endfunction
 
 
-function! util#ParseV2(line)
+function! nim#util#ParseV2(line)
     let res = split(a:line, "	")
     let path = split(res[2], "\\.")
     let result = {
@@ -153,16 +153,16 @@ function! util#ParseV2(line)
 endfunction
 
 
-function! util#FilterCompletionLine(line)
+function! nim#util#FilterCompletionLine(line)
     let result = a:line =~ "^\\(def\\|sug\\|use\\|con\\|outline\\|highlight\\)\\t"
     return result
 endfunction
 
 
-function! util#FilterCompletions(lines)
+function! nim#util#FilterCompletions(lines)
     let result = []
     for line in a:lines
-        if util#FilterCompletionLine(line)
+        if nim#util#FilterCompletionLine(line)
             call add(result, line)
         endif
     endfor
@@ -174,7 +174,7 @@ let s:nesting_chars = ['(', '[', '{']
 let s:unnesting_chars = [')', ']', '}']
 let s:strip_regex = '\v^\s*(.{-})\s*$'
 
-function! util#ParseSignature(input)
+function! nim#util#ParseSignature(input)
     let pstart = stridx(a:input, "(") + 1
     let pend = strridx(a:input, ")")
     let parameters = strpart(a:input, pstart, pend - pstart)
@@ -223,12 +223,12 @@ function! util#ParseSignature(input)
     return result
 endfunction
 
-function! util#SignatureStr(input)
-    let tinfo = util#ParseSignature(a:input)
+function! nim#util#SignatureStr(input)
+    let tinfo = nim#util#ParseSignature(a:input)
     return join(tinfo.params, " -> ") . (tinfo.reval != "" ? (" => " . tinfo.reval) : "")
 endfunction
 
-function! util#djb(str)
+function! nim#util#djb(str)
     let hash = 0
     for s:char in split(a:str, '\zs')
         let hash = (hash * 11) + char2nr(s:char)
@@ -236,11 +236,11 @@ function! util#djb(str)
     return float2nr(hash)
 endfunction
 
-function! util#open_module_doc(module, symbol)
+function! nim#util#open_module_doc(module, symbol)
     call system("$BROWSER " . "http://nim-lang.org/docs/" . a:module . ".html#" . a:symbol)
 endfunction
 
-function! util#SelectNimProc(inner)
+function! nim#util#SelectNimProc(inner)
     let curline = nextnonblank(line("."))
     if curline == 0
         let curline = prevnonblank(line("."))
@@ -288,7 +288,7 @@ function! util#SelectNimProc(inner)
 endfunction
 
 
-function! util#goto_file()
+function! nim#util#goto_file()
     let module_loc = modules#moduleLocation(expand("<cword>"))
 endfunction
 

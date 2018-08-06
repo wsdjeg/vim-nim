@@ -5,16 +5,16 @@ let s:save_cpo = &cpo
 set cpo&vim
 
 
-function! omni#item(parsed)
+function! nim#omni#item(parsed) abort
     return {
                 \ 'word': a:parsed.lname,
-                \ 'kind': a:parsed.kindshort . " » " . util#SignatureStr(a:parsed.type),
+                \ 'kind': a:parsed.kindshort . " » " . nim#util#SignatureStr(a:parsed.type),
                 \ 'info': a:parsed.doc,
                 \ 'menu': a:parsed.module,
                 \ }
 endfunction
 
-function! omni#item_module(name, file, type)
+function! nim#omni#item_module(name, file, type) abort
     return {
                 \ 'word': a:name,
                 \ 'kind': a:type,
@@ -24,27 +24,27 @@ function! omni#item_module(name, file, type)
 endfunction
 
 " TODO: Refactor combine (1)
-function! omni#nimsuggest(file, l, c)
+function! nim#omni#nimsuggest(file, l, c) abort
     let completions = []
-    let tempfile = util#WriteMemfile()
+    let tempfile = nim#util#WriteMemfile()
     let query = "sug " . a:file . ";" . tempfile . ":" . a:l . ":" . a:c
     let jobcmdstr = g:nvim_nim_exec_nimsuggest . " --threads:on --colors:off --compileOnly --experimental --v2 --stdin " . a:file
     let fullcmd = 'echo -e "' . query . '"|' . jobcmdstr
-    let completions_raw = util#FilterCompletions(split(system(fullcmd), "\n"))
+    let completions_raw = nim#util#FilterCompletions(split(system(fullcmd), "\n"))
 
     for line in completions_raw
-        let parsed = util#ParseV2(line)
+        let parsed = nim#util#ParseV2(line)
         call add(completions, omni#item(parsed))
     endfor
 
     return completions
 endfunction
 
-function! omni#modulesuggest(file, l, c)
-    let modules = modules#FindGlobalImports()
+function! nim#omni#modulesuggest(file, l, c) abort
+    let modules = nim#modules#FindGlobalImports()
     let completions = []
     for module in sort(keys(modules))
-        call add(completions, omni#item_module(module, modules[module], "G"))
+        call add(completions, nim#omni#item_module(module, modules[module], "G"))
     endfor
     return completions
 endfunction
@@ -67,7 +67,7 @@ function! s:findStart()
     return pos - 1
 endfunction
 
-function! omni#nim(findstart, base)
+function! nim#omni#nim(findstart, base) abort
     if a:findstart && empty(a:base)
         return s:findStart()
     endif
@@ -77,11 +77,11 @@ function! omni#nim(findstart, base)
     let l = line(".")
     let c = col(".")
 
-    let [istart, iend] = modules#ImportLineRange()
+    let [istart, iend] = nim#modules#ImportLineRange()
     if istart != 0 && istart <= l && l < iend
-        let completions = omni#modulesuggest(file, l, c)
+        let completions = nim#omni#modulesuggest(file, l, c)
     else
-        let completions = omni#nimsuggest(file, l, c)
+        let completions = nim#omni#nimsuggest(file, l, c)
     endif
 
     return {

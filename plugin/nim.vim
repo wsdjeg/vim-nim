@@ -1,5 +1,9 @@
 scriptencoding utf-8
 
+""
+" @section Introduction, intro
+" vim-nim provides nim language support in vim and neovim.
+
 if exists('g:loaded_vim_nim')
     finish
 endif

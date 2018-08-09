@@ -1,0 +1,14 @@
+*vim-nim.txt*	nim support for SpaceVim
+wsdjeg                                                               *vim-nim*
+
+==============================================================================
+CONTENTS                                                    *vim-nim-contents*
+  1. Introduction..............................................|vim-nim-intro|
+
+==============================================================================
+INTRODUCTION                                                   *vim-nim-intro*
+
+vim-nim provides nim language support in vim and neovim.
+
+
+vim:tw=78:ts=8:ft=help:norl:

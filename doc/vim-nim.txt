@@ -4,11 +4,19 @@ wsdjeg                                                               *vim-nim*
 ==============================================================================
 CONTENTS                                                    *vim-nim-contents*
   1. Introduction..............................................|vim-nim-intro|
+  2. Configuration............................................|vim-nim-config|
 
 ==============================================================================
 INTRODUCTION                                                   *vim-nim-intro*
 
 vim-nim provides nim language support in vim and neovim.
+
+==============================================================================
+CONFIGURATION                                                 *vim-nim-config*
+
+                                                     *g:nvim_nim_enable_async*
+Enable/Disable asynchronously support in neovim and vim. By default it is
+enabled.
 
 
 vim:tw=78:ts=8:ft=help:norl:

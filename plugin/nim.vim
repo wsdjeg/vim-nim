@@ -37,6 +37,9 @@ if exists('g:ycm_semantic_triggers')
 endif
 
 if !exists('g:nvim_nim_enable_async')
+    ""
+    " Enable/Disable asynchronously support in neovim and vim. By default it
+    " is enabled.
     let g:nvim_nim_enable_async = has('nvim')
 endif
 

@@ -4,7 +4,7 @@ let s:save_cpo = &cpo
 set cpo&vim
 
 
-function! features#outline#renderable(parsed)
+function! nim#features#outline#renderable(parsed) abort
     return {
                 \ 'line': a:parsed.line,
                 \ 'col': a:parsed.col,
@@ -17,66 +17,66 @@ let s:goto_table = {}
 let s:current_buffer = -1
 let s:buffermap = {}
 let s:groups = {}
-let s:group_order = ["Types", "Routines", "Constants", "Globals", "Imports"]
+let s:group_order = ['Types', 'Routines', 'Constants', 'Globals', 'Imports']
 let s:symbols = {
-            \ 'skProc':         "proc",
-            \ 'skTemplate':     "template",
-            \ 'skType':         "",
-            \ 'skMacro':        "macro",
-            \ 'skMethod':       "function",
-            \ 'skField':        "field",
-            \ 'skAlias':        "alias",
-            \ 'skConst':        "constant",
-            \ 'skConverter':    "converter",
-            \ 'skDynLib':       "dynlib",
-            \ 'skEnumField':    "enum",
-            \ 'skGlobalVar':    "var",
-            \ 'skGlobalLet':    "let",
-            \ 'skIterator':     "iterator",
-            \ 'skLabel':        "label",
-            \ 'skLet':          "constant",
-            \ 'skModule':       "module",
-            \ 'skPackage':      "package",
+            \ 'skProc':         'proc',
+            \ 'skTemplate':     'template',
+            \ 'skType':         '',
+            \ 'skMacro':        'macro',
+            \ 'skMethod':       'function',
+            \ 'skField':        'field',
+            \ 'skAlias':        'alias',
+            \ 'skConst':        'constant',
+            \ 'skConverter':    'converter',
+            \ 'skDynLib':       'dynlib',
+            \ 'skEnumField':    'enum',
+            \ 'skGlobalVar':    'var',
+            \ 'skGlobalLet':    'let',
+            \ 'skIterator':     'iterator',
+            \ 'skLabel':        'label',
+            \ 'skLet':          'constant',
+            \ 'skModule':       'module',
+            \ 'skPackage':      'package',
             \ }
 
-            " \ 'skField':     "Fields",
+            " \ 'skField':     'Fields',
 let s:group_aliases = {
-            \ 'skType':      "Types",
-            \ 'skProc':      "Routines",
-            \ 'skTemplate':  "Routines",
-            \ 'skMacro':     "Routines",
-            \ 'skMethod':    "Routines",
-            \ 'skConverter': "Routines",
-            \ 'skIterator':  "Routines",
-            \ 'skConst':     "Constants",
-            \ 'skLet':       "Constants",
-            \ 'skGlobalVar': "Globals",
-            \ 'skGlobalLet': "Globals",
-            \ 'skDynLib':    "Imports",
-            \ 'skModule':    "Imports",
-            \ 'skPackage':   "Imports",
+            \ 'skType':      'Types',
+            \ 'skProc':      'Routines',
+            \ 'skTemplate':  'Routines',
+            \ 'skMacro':     'Routines',
+            \ 'skMethod':    'Routines',
+            \ 'skConverter': 'Routines',
+            \ 'skIterator':  'Routines',
+            \ 'skConst':     'Constants',
+            \ 'skLet':       'Constants',
+            \ 'skGlobalVar': 'Globals',
+            \ 'skGlobalLet': 'Globals',
+            \ 'skDynLib':    'Imports',
+            \ 'skModule':    'Imports',
+            \ 'skPackage':   'Imports',
             \ }
 
-function! s:CreateSymbolRow(symbol, active)
+function! s:CreateSymbolRow(symbol, active) abort
     if g:nvim_nim_outline_track_symbol && a:active
-        let result = " «» " . a:symbol.name
+        let result = ' «» ' . a:symbol.name
     else
-        let result = "  » " . a:symbol.name
+        let result = '  » ' . a:symbol.name
     endif
     if len(s:symbols[a:symbol.kind]) > 0
-        let result .= " (" . s:symbols[a:symbol.kind] . ")"
+        let result .= ' (' . s:symbols[a:symbol.kind] . ')'
     endif
     return result
 endfunction
 
-function! s:FindClosest()
+function! s:FindClosest() abort
     if len(s:goto_table) == 0
         return 
     endif
 
-    let bline = line(".")
+    let bline = line('.')
     let closest = 1
-    for l in sort(map(keys(s:buffermap), 'str2nr(v:val)'), "n")
+    for l in sort(map(keys(s:buffermap), 'str2nr(v:val)'), 'n')
         if l <= bline
             let closest = l
         else
@@ -86,7 +86,7 @@ function! s:FindClosest()
     return 0
 endfunction
 
-function! s:ConfigureOutlineBuffer()
+function! s:ConfigureOutlineBuffer() abort
     if s:IsOpen()
         return
     endif
@@ -97,13 +97,13 @@ function! s:ConfigureOutlineBuffer()
     setlocal buftype=nofile
     setlocal nonumber
     setlocal nowrap
-    exec "silent vertical resize " . g:nvim_nim_outline_buffer_width
+    exec 'silent vertical resize ' . g:nvim_nim_outline_buffer_width
     setlocal wfw
     nnoremap <buffer><silent> <return> :call features#outline#JumpToSymbol(0)<cr>
     nnoremap <buffer><silent> o        :call features#outline#JumpToSymbol(1)<cr>
 endfunction
 
-function! features#outline#JumpToSymbol(stay)
+function! nim#features#outline#JumpToSymbol(stay) abort
     if !s:IsFocused()
         return
     endif
@@ -213,7 +213,7 @@ function! s:Focus()
     endif
 endfunction
 
-function! features#outline#render()
+function! nim#features#outline#render()
     call s:RenderOutline()
 endfunction
 

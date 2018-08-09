@@ -4,7 +4,7 @@ let s:save_cpo = &cpo
 set cpo&vim
 
 
-function! nim#features#debug#run()
+function! nim#features#debug#run() abort
     echo "Nim tools debugging info"
     echo "------------------------"
     echo "\n"

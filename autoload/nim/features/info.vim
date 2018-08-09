@@ -6,15 +6,15 @@ set cpo&vim
 
 let s:InfoImpl = {}
 
-function! s:New(useWeb)
+function! s:New(useWeb) abort
     let result = copy(s:InfoImpl)
     let result.useWeb = a:useWeb
     return result
 endfunction
 
-function! s:InfoImpl.run(data)
+function! s:InfoImpl.run(data) abort
     if len(a:data.lines) == 0
-        echo "No information found"
+        echo 'No information found'
         return
     endif
 
@@ -30,17 +30,17 @@ function! s:InfoImpl.run(data)
 
         if len(res.name) > 0 && res.lname != res.name
             echon "\n"
-            echohl Comment | echon " » "
+            echohl Comment | echon ' » '
             echohl Typedef | echon res.name
         end
 
         echohl Comment | echon "\n » "
         echohl Include | echon res.location
-        echohl Comment | echon " ("
+        echohl Comment | echon ' ('
         echohl String | echon res.file
-        echohl Comment | echon ")"
+        echohl Comment | echon ')'
 
-        if res.doc != "\"\""
+        if res.doc !=# "\"\""
             echohl Comment | echon "\n » "
             echohl Normal | echon res.doc
         endif
@@ -48,18 +48,18 @@ function! s:InfoImpl.run(data)
 endfunction
 
 
-function! features#info#web()
-    let current_word = expand("<cword>")
-    if modules#isGlobalImport(current_word)
-        call util#open_module_doc(current_word, "")
+function! nim#features#info#web() abort
+    let current_word = expand('<cword>')
+    if nim#modules#isGlobalImport(current_word)
+        call nim#util#open_module_doc(current_word, '')
     else
-        call suggest#New("def", !g:nvim_nim_enable_async, 0, s:New(1))
+        call nim#suggest#New('def', !g:nvim_nim_enable_async, 0, s:New(1))
     endif
 endfunction
 
 
-function! features#info#run()
-    call suggest#New("def", !g:nvim_nim_enable_async, 0, s:New(0))
+function! nim#features#info#run() abort
+    call nim#suggest#New('def', !g:nvim_nim_enable_async, 0, s:New(0))
 endfunction
 
 

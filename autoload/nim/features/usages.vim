@@ -46,14 +46,14 @@ endfunction
 
 let s:UsagesDefinitionImpl = {}
 function! s:UsagesDefinitionImpl.run(data)
-    call suggest#NewKnown("use", !g:nvim_nim_enable_async, 1, a:data.file, a:data.line, a:data.col, s:UsagesImpl)
+    call nim#suggest#NewKnown('use', !g:nvim_nim_enable_async, 1, a:data.file, a:data.line, a:data.col, s:UsagesImpl)
 endfunction
 
-function! features#usages#run(findInProject)
+function! nim#features#usages#run(findInProject) abort
     cclose
     call setqflist([])
     let s:findInProject = a:findInProject
-    call suggest#New("def", !g:nvim_nim_enable_async, 1, s:UsagesDefinitionImpl)
+    call nim#suggest#New('def', !g:nvim_nim_enable_async, 1, s:UsagesDefinitionImpl)
 endfunction
 
 

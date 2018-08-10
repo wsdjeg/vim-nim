@@ -5,6 +5,7 @@ wsdjeg                                                               *vim-nim*
 CONTENTS                                                    *vim-nim-contents*
   1. Introduction..............................................|vim-nim-intro|
   2. Configuration............................................|vim-nim-config|
+  3. Commands...............................................|vim-nim-commands|
 
 ==============================================================================
 INTRODUCTION                                                   *vim-nim-intro*
@@ -17,6 +18,12 @@ CONFIGURATION                                                 *vim-nim-config*
                                                      *g:nvim_nim_enable_async*
 Enable/Disable asynchronously support in neovim and vim. By default it is
 enabled.
+
+==============================================================================
+COMMANDS                                                    *vim-nim-commands*
+
+:[N]NimDefinition                                             *:NimDefinition*
+  Jump to the definition of the symbol under the cursor.
 
 
 vim:tw=78:ts=8:ft=help:norl:

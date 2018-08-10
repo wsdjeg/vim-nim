@@ -99,8 +99,8 @@ function! s:ConfigureOutlineBuffer() abort
     setlocal nowrap
     exec 'silent vertical resize ' . g:nvim_nim_outline_buffer_width
     setlocal wfw
-    nnoremap <buffer><silent> <return> :call features#outline#JumpToSymbol(0)<cr>
-    nnoremap <buffer><silent> o        :call features#outline#JumpToSymbol(1)<cr>
+    nnoremap <buffer><silent> <return> :call nim#features#outline#JumpToSymbol(0)<cr>
+    nnoremap <buffer><silent> o        :call nim#features#outline#JumpToSymbol(1)<cr>
 endfunction
 
 function! nim#features#outline#JumpToSymbol(stay) abort
@@ -108,13 +108,13 @@ function! nim#features#outline#JumpToSymbol(stay) abort
         return
     endif
 
-    let l = line(".")
+    let l = line('.')
     if !has_key(s:goto_table, l)
         return
     endif
 
     let [jl, jc] = s:goto_table[l]
-    call util#JumpToWindow(s:window, jl, jc)
+    call nim#util#JumpToWindow(s:window, jl, jc)
     normal! ^
 
     if a:stay
@@ -122,10 +122,10 @@ function! nim#features#outline#JumpToSymbol(stay) abort
         wincmd p
     endif
 
-    call features#outline#run(0)
+    call nim#features#outline#run(0)
 endfunction
 
-function! s:UpdateOutline(groups)
+function! s:UpdateOutline(groups) abort
     let s:goto_table = {}
     let s:buffermap = {}
     let s:groups = a:groups
@@ -133,7 +133,7 @@ function! s:UpdateOutline(groups)
     call s:RenderOutline()
 endfunction
 
-function! s:RenderOutline()
+function! s:RenderOutline() abort
     let wasFocused = s:IsFocused()
     let closest = 0
 
@@ -146,11 +146,11 @@ function! s:RenderOutline()
         return
     endif
 
-    let l = line(".")
-    let c = line(".")
-    let w0 = line("w0")
+    let l = line('.')
+    let c = line('.')
+    let w0 = line('w0')
 
-    exec "silent vertical resize " . g:nvim_nim_outline_buffer_width
+    exec 'silent vertical resize ' . g:nvim_nim_outline_buffer_width
 
     let rlines = []
 
@@ -168,7 +168,7 @@ function! s:RenderOutline()
             endif
             call add(rlines, s:CreateSymbolRow(symbol, !wasFocused && closest == symbol.line))
         endfor
-        call add(rlines, "")
+        call add(rlines, '')
     endfor
 
     let idx = 1
@@ -177,16 +177,16 @@ function! s:RenderOutline()
         let idx += 1
     endfor
 
-    exec ":" . len(rlines)
+    exec ':' . len(rlines)
     normal! dG
 
     if !wasFocused && g:nvim_nim_outline_track_symbol && closest != 0 && has_key(s:buffermap, closest)
         call cursor(s:buffermap[closest], 2)
-        normal zz
-        normal ^
+        normal! zz
+        normal! ^
     else
         call cursor(w0, 1)
-        normal zt
+        normal! zt
         call cursor(l, 2)
     endif
 
@@ -195,44 +195,44 @@ function! s:RenderOutline()
     endif
 endfunction
 
-function! s:Window()
-    return bufwinnr("__nim_outline__")
+function! s:Window() abort
+    return bufwinnr('__nim_outline__')
 endfunction
 
-function! s:IsOpen()
+function! s:IsOpen() abort
     return s:Window() != -1
 endfunction
 
-function! s:IsFocused()
+function! s:IsFocused() abort
     return s:IsOpen() && s:Window() == winnr()
 endfunction
 
-function! s:Focus()
+function! s:Focus() abort
     if s:IsOpen()
-        exec ":" . s:Window() . "wincmd w"
+        exec ':' . s:Window() . 'wincmd w'
     endif
 endfunction
 
-function! nim#features#outline#render()
+function! nim#features#outline#render() abort
     call s:RenderOutline()
 endfunction
 
 let s:OutlineImpl = {}
-function! s:OutlineImpl.run(data)
+function! s:OutlineImpl.run(data) abort
     let s:OutlineImpl.cache = a:data
     let s:groups = {
-                \ "Types":     [],
-                \ "Routines": [],
-                \ "Fields":    [],
-                \ "Constants": [],
-                \ "Globals":   [],
-                \ "Imports":   [],
+                \ 'Types':     [],
+                \ 'Routines': [],
+                \ 'Fields':    [],
+                \ 'Constants': [],
+                \ 'Globals':   [],
+                \ 'Imports':   [],
                 \ }
 
     for line in a:data.lines
-        let p = util#ParseV2(line)
+        let p = nimutil#ParseV2(line)
         if has_key(s:group_aliases, p.kind)
-            let renderable = features#outline#renderable(p)
+            let renderable = nimfeatures#outline#renderable(p)
             call add(s:groups[s:group_aliases[p.kind]], renderable)
         endif
     endfor
@@ -241,16 +241,16 @@ function! s:OutlineImpl.run(data)
 endfunction
 
 
-function! s:BufferModified()
-    return buffer_number(".") != s:current_buffer || getbufvar(buffer_number("."), "&mod")
+function! s:BufferModified() abort
+    return buffer_number('.') != s:current_buffer || getbufvar(buffer_number('.'), '&mod')
 endfunction
 
 
-function! features#outline#run(isUpdating)
+function! nim#features#outline#run(isUpdating) abort
     if !a:isUpdating || s:IsOpen()
         " if s:BufferModified()
         let s:current_buffer = winnr()
-        call suggest#New("outline", !g:nvim_nim_enable_async, 1, s:OutlineImpl)
+        call nim#suggest#New('outline', !g:nvim_nim_enable_async, 1, s:OutlineImpl)
         " else
             " call s:OutlineImpl.run(s:OutlineImpl.cache)
         " endif

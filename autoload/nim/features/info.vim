@@ -18,10 +18,10 @@ function! s:InfoImpl.run(data) abort
         return
     endif
 
-    let res = util#ParseV1(a:data.lines[0])
+    let res = nim#util#ParseV1(a:data.lines[0])
 
     if self.useWeb
-        call util#open_module_doc(res.location, res.lname)
+        call nim#util#open_module_doc(res.location, res.lname)
     else
         echohl None
         echohl Function | echon res.lname

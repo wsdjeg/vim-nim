@@ -13,7 +13,8 @@ setlocal errorformat=
             \%A%f(%l\\,\ %c)\ Hint:\ %m,
             \%E%f(%l\\,\ %c)\ Error:\ %m,
             \%W%f(%l\\,\ %c)\ Warning:\ %m
-
+""
+" Jump to the definition of the symbol under the cursor.
 command! -buffer -nargs=* -complete=buffer NimDefinition          call nim#features#definition#run()
 command! -buffer -nargs=* -complete=buffer NimInfo                call nim#features#info#run()
 command! -buffer -nargs=* -complete=buffer NimWeb                 call nim#features#info#web()

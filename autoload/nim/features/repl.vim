@@ -7,21 +7,21 @@ set cpo&vim
 let s:repl_pid = -1
 let s:repl_window = -1
 
-function! s:Window()
+function! s:Window() abort
     return winbufnr(s:repl_window)
 endfunction
 
-function! s:IsOpen()
+function! s:IsOpen() abort
     return winbufnr(s:Window()) > 0
 endfunction
 
-function! s:Focus()
+function! s:Focus() abort
     if s:IsOpen()
-        exec ":" . s:Window() . "wincmd w"
+        exec ':' . s:Window() . 'wincmd w'
     endif
 endfunction
 
-function! features#repl#start()
+function! nim#features#repl#start() abort
     if s:IsOpen()
         call s:Focus()
     else
@@ -42,7 +42,7 @@ function! features#repl#start()
     endif
 endfunction
 
-function! features#repl#send(lines)
+function! nim#features#repl#send(lines) abort
     if !s:IsOpen()
         call features#repl#start()
         sleep 100m
@@ -57,13 +57,13 @@ function! features#repl#send(lines)
     norm! i
 endfunction
 
-function! features#repl#stop()
+function! nim#features#repl#stop() abort
     if s:repl_pid > 0
         call jobstop(s:repl_pid)
         call s:Focus()
-        exec ":bd!"
+        exec ':bd!'
     else
-        echom "No REPL running"
+        echom 'No REPL running'
     endif
 endfunction
 

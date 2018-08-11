@@ -36,10 +36,6 @@ command! -buffer -nargs=* -complete=buffer NimEdbIgonore          call nim#featu
 command! -buffer -nargs=* -complete=buffer NimEdbContinue         call nim#features#debugger#continue()
 command! -buffer -nargs=* -complete=buffer NimEdbToggleBP         call nim#features#debugger#togglebp()
 
-command! -buffer -nargs=* -complete=buffer NimREPL                call nim#features#repl#start()
-command! -buffer -nargs=* -complete=buffer NimREPLEvalFile        call nim#features#repl#send(getline(0, line("$")))
-command! -buffer -nargs=* -complete=buffer -range NimREPLEval     call nim#features#repl#send(getline(getpos("'<")[1], getpos("'>")[1]))
-
 if g:nvim_nim_enable_default_binds == 1
     nnoremap <buffer> <c-]> :NimDefinition<cr>
     nnoremap <buffer> gf    :call util#goto_file()<cr>

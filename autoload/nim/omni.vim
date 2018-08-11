@@ -63,7 +63,7 @@ function! s:findStart() abort
         endif
         let pos = pos - 1
     endwhile
-echom pos -1
+
     return pos - 1
 endfunction
 

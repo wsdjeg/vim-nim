@@ -6,32 +6,32 @@ set cpo&vim
 
 
 let s:all_highlights = {
-            \ 'skProc':         "Function",
-            \ 'skTemplate':     "PreProc",
-            \ 'skType':         "Type",
-            \ 'skMacro':        "Macro",
-            \ 'skMethod':       "Function",
-            \ 'skField':        "Identifier",
-            \ 'skAlias':        "Type",
-            \ 'skConditional':  "Conditional",
-            \ 'skConst':        "Constant",
-            \ 'skConverter':    "Function",
-            \ 'skDynLib':       "Include",
-            \ 'skEnumField':    "Identifier",
-            \ 'skForVar':       "Special",
-            \ 'skGenericParam': "Typedef",
-            \ 'skGlobalVar':    "Constant",
-            \ 'skGlobalLet':    "Constant",
-            \ 'skIterator':     "Keyword",
-            \ 'skLabel':        "Identifier",
-            \ 'skLet':          "Constant",
-            \ 'skModule':       "Include",
-            \ 'skPackage':      "Define",
-            \ 'skParam':        "Identifier",
-            \ 'skStub':         "PreCondit",
-            \ 'skTemp':         "Identifier",
-            \ 'skUnknown':      "Error",
-            \ 'skVar':          "Constant",
+            \ 'skProc':         'Function',
+            \ 'skTemplate':     'PreProc',
+            \ 'skType':         'Type',
+            \ 'skMacro':        'Macro',
+            \ 'skMethod':       'Function',
+            \ 'skField':        'Identifier',
+            \ 'skAlias':        'Type',
+            \ 'skConditional':  'Conditional',
+            \ 'skConst':        'Constant',
+            \ 'skConverter':    'Function',
+            \ 'skDynLib':       'Include',
+            \ 'skEnumField':    'Identifier',
+            \ 'skForVar':       'Special',
+            \ 'skGenericParam': 'Typedef',
+            \ 'skGlobalVar':    'Constant',
+            \ 'skGlobalLet':    'Constant',
+            \ 'skIterator':     'Keyword',
+            \ 'skLabel':        'Identifier',
+            \ 'skLet':          'Constant',
+            \ 'skModule':       'Include',
+            \ 'skPackage':      'Define',
+            \ 'skParam':        'Identifier',
+            \ 'skStub':         'PreCondit',
+            \ 'skTemp':         'Identifier',
+            \ 'skUnknown':      'Error',
+            \ 'skVar':          'Constant',
             \ }
 
 let s:highlights = {}
@@ -41,29 +41,29 @@ let s:NimHighlighter = {
             \ }
             " \ 'pty': 1
 
-function! s:NimHighlighter.on_stdout(job, chunk, ...)
-    if len(a:chunk[0]) != 0 && !(a:chunk[0] =~ "^usage")
+function! s:NimHighlighter.on_stdout(job, chunk, ...) abort
+    if len(a:chunk[0]) != 0 && !(a:chunk[0] =~# '^usage')
         call extend(self.lines, a:chunk)
     endif
 endfunction
 
-function! s:NimHighlighter.on_stderr(job, chunk, ...)
+function! s:NimHighlighter.on_stderr(job, chunk, ...) abort
 endfunction
 
-function! Remove(id)
+function! s:Remove(id) abort
     try
         call matchdelete(a:id)
     catch /E803:/
     endtry
 endfunction
 
-function! s:NimHighlighter.on_exit(...)
-    if empty(self.lines) && self.file != expand("%:p")
+function! s:NimHighlighter.on_exit(...) abort
+    if empty(self.lines) && self.file != expand('%:p')
         return
     endif
 
     for m in b:highlights
-        call Remove(m)
+        call s:Remove(m)
     endfor
 
     let b:highlights = []
@@ -78,7 +78,7 @@ function! s:NimHighlighter.on_exit(...)
             continue
         endif
 
-        let p = split(line, "	")
+        let p = split(line, '	')
         if len(p) < 5
             continue
         endif
@@ -90,13 +90,13 @@ function! s:NimHighlighter.on_exit(...)
         let str   = getline(line)
 
         " Hack because nimsuggest gives wrong place
-        if str[c - 1] == '*'
+        if str[c - 1] ==# '*'
             let c -= s
         endif
 
         if has_key(s:highlights, ctype)
             if has_key(semantics_set, ctype)
-                call add(b:highlights, matchaddpos("Semantic" . abs(util#djb(strpart(str, c - 1, s))) % 20, [[line, c, s]]))
+                call add(b:highlights, matchaddpos('Semantic' . abs(nim#util#djb(strpart(str, c - 1, s))) % 20, [[line, c, s]]))
             else
                 call add(b:highlights, matchaddpos(s:highlights[ctype], [[line, c, s]]))
             endif
@@ -105,23 +105,23 @@ function! s:NimHighlighter.on_exit(...)
 
 endfunction
 
-function highlighter#New()
+function! nim#highlighter#New() abort
     let result = copy(s:NimHighlighter)
     let result.lines = []
-    let result.file = expand("%:p")
-    let result.tempfile = util#WriteMemfile()
+    let result.file = expand('%:p')
+    let result.tempfile = nim#util#WriteMemfile()
     let result.job = jobstart([g:nvim_nim_exec_nimsuggest, '--v2', '--stdin', result.file], result)
-    let cmd = "highlight " . result.file . ";" . result.tempfile . ":1:1\nquit\n"
+    let cmd = 'highlight ' . result.file . ';' . result.tempfile . ":1:1\nquit\n"
     call jobsend(result.job, cmd) 
 
-    if !exists("b:highlights")
+    if !exists('b:highlights')
         let b:highlights = []
     endif
     return result
 endfunction
 
 
-function! highlighter#select_highlights(kinds)
+function! nim#highlighter#select_highlights(kinds) abort
     let s:highlights = {}
     for kind in a:kinds
         let s:highlights[kind] = s:all_highlights[kind]
@@ -129,10 +129,10 @@ function! highlighter#select_highlights(kinds)
 endfunction
 
 
-function! highlighter#guard()
+function! nim#highlighter#guard() abort
     if g:nvim_nim_highlighter_enable
-        if line("$") + 0 < 500
-            call highlighter#New()
+        if line('$') + 0 < 500
+            call nim#highlighter#New()
         endif
     endif
 endfunction

@@ -12,7 +12,7 @@ let g:loaded_vim_nim = 1
 let s:save_cpo = &cpo
 set cpo&vim
 
-function! s:CheckDependencC(command)
+function! s:CheckDependenc(command)
     if !executable(a:command)
         echoerr 'Not found: ' . a:command
         finish
@@ -44,19 +44,19 @@ if !exists('g:nvim_nim_enable_async')
 endif
 
 if !exists('g:nvim_nim_exec_nim')
-    let g:nvim_nim_exec_nim = s:CheckDependencC('nim')
+    let g:nvim_nim_exec_nim = s:CheckDependenc('nim')
 endif
 
 if !exists('g:nvim_nim_exec_nimble')
-    let g:nvim_nim_exec_nimble = s:CheckDependencC('nimble')
+    let g:nvim_nim_exec_nimble = s:CheckDependenc('nimble')
 endif
 
 if !exists('g:nvim_nim_exec_nimsuggest')
-    let g:nvim_nim_exec_nimsuggest = s:CheckDependencC('nimsuggest')
+    let g:nvim_nim_exec_nimsuggest = s:CheckDependenc('nimsuggest')
 endif
 
 if !exists('g:nvim_nim_exec_bash')
-    let g:nvim_nim_exec_bash = s:CheckDependencC('bash')
+    let g:nvim_nim_exec_bash = s:CheckDependenc('bash')
 endif
 
 if !exists('g:nvim_nim_deps_nim')

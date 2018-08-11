@@ -8,7 +8,7 @@ set cpo&vim
 function! nim#omni#item(parsed) abort
     return {
                 \ 'word': a:parsed.lname,
-                \ 'kind': a:parsed.kindshort . " » " . nim#util#SignatureStr(a:parsed.type),
+                \ 'kind': a:parsed.kindshort . ' » ' . nim#util#SignatureStr(a:parsed.type),
                 \ 'info': a:parsed.doc,
                 \ 'menu': a:parsed.module,
                 \ }
@@ -19,7 +19,7 @@ function! nim#omni#item_module(name, file, type) abort
                 \ 'word': a:name,
                 \ 'kind': a:type,
                 \ 'info': a:file,
-                \ 'menu': "module",
+                \ 'menu': 'module',
                 \ }
 endfunction
 
@@ -27,14 +27,14 @@ endfunction
 function! nim#omni#nimsuggest(file, l, c) abort
     let completions = []
     let tempfile = nim#util#WriteMemfile()
-    let query = "sug " . a:file . ";" . tempfile . ":" . a:l . ":" . a:c
-    let jobcmdstr = g:nvim_nim_exec_nimsuggest . " --threads:on --colors:off --compileOnly --experimental --v2 --stdin " . a:file
+    let query = 'sug ' . a:file . ';' . tempfile . ':' . a:l . ':' . a:c
+    let jobcmdstr = g:nvim_nim_exec_nimsuggest . ' --threads:on --colors:off --compileOnly --experimental --v2 --stdin ' . a:file
     let fullcmd = 'echo -e "' . query . '"|' . jobcmdstr
     let completions_raw = nim#util#FilterCompletions(split(system(fullcmd), "\n"))
 
     for line in completions_raw
         let parsed = nim#util#ParseV2(line)
-        call add(completions, omni#item(parsed))
+        call add(completions, nim#omni#item(parsed))
     endfor
 
     return completions
@@ -44,14 +44,14 @@ function! nim#omni#modulesuggest(file, l, c) abort
     let modules = nim#modules#FindGlobalImports()
     let completions = []
     for module in sort(keys(modules))
-        call add(completions, nim#omni#item_module(module, modules[module], "G"))
+        call add(completions, nim#omni#item_module(module, modules[module], 'G'))
     endfor
     return completions
 endfunction
 
-function! s:findStart()
-    let pos = col(".")
-    let cline = getline(".")
+function! s:findStart() abort
+    let pos = col('.')
+    let cline = getline('.')
 
     while pos > 1
         let ch = char2nr(cline[pos - 2])
@@ -73,9 +73,9 @@ function! nim#omni#nim(findstart, base) abort
     endif
 
     let completions = []
-    let file = expand("%:p")
-    let l = line(".")
-    let c = col(".")
+    let file = expand('%:p')
+    let l = line('.')
+    let c = col('.')
 
     let [istart, iend] = nim#modules#ImportLineRange()
     if istart != 0 && istart <= l && l < iend

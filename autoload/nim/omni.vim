@@ -40,10 +40,10 @@ function! nim#omni#nimsuggest(file, l, c) abort
     return completions
 endfunction
 
-function! nim#omni#modulesuggest(file, l, c) abort
+function! nim#omni#modulesuggest(file, l, c, base) abort
     let modules = nim#modules#FindGlobalImports()
     let completions = []
-    for module in sort(keys(modules))
+    for module in sort(filter(keys(modules)), 'v:val =~ "^" . a:base')
         call add(completions, nim#omni#item_module(module, modules[module], 'G'))
     endfor
     return completions
@@ -79,14 +79,11 @@ function! nim#omni#nim(findstart, base) abort
 
     let [istart, iend] = nim#modules#ImportLineRange()
     if istart != 0 && istart <= l && l < iend
-        let completions = nim#omni#modulesuggest(file, l, c)
+        let completions = nim#omni#modulesuggest(file, l, c, a:base)
     else
         let completions = nim#omni#nimsuggest(file, l, c)
     endif
-
-    return {
-                \ 'words': completions,
-                \ 'refresh': 'always' }
+    return  completions
 endfunction
 
 

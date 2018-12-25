@@ -15,7 +15,7 @@ set cpo&vim
 function! s:CheckDependenc(command)
     if !executable(a:command)
         echoerr 'Not found: ' . a:command
-        finish
+        return ''
     endif
     return a:command
 endfunction

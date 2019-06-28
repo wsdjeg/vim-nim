@@ -22,7 +22,7 @@ function! s:UsagesImpl.run(data)
                 continue
             endif
 
-            let res = util#ParseV2(line)
+            let res = nim#util#ParseV2(line)
             if !s:findInProject && res.file != expand("%:p")
                 continue
             endif
@@ -39,8 +39,8 @@ function! s:UsagesImpl.run(data)
         " let s:highlights = matchaddpos("Search", highlights)
 
         copen
-        nnoremap <buffer><silent> <return> :call util#JumpFromQuickfix(0)<cr>
-        nnoremap <buffer><silent> o :call util#JumpFromQuickfix(1)<cr>
+        nnoremap <buffer><silent> <return> :call nim#util#JumpFromQuickfix(0)<cr>
+        nnoremap <buffer><silent> o :call nim#util#JumpFromQuickfix(1)<cr>
     endif
 endfunction
 

@@ -45,13 +45,13 @@ function! nim#suggest#NewKnown(command, sync, useV2, file, line, col, handler)
     let result.col = a:col
     let result.handler = a:handler
     let result.isAsync = has("nvim") && !a:sync && g:nvim_nim_enable_async
-    let result.tempfile = util#WriteMemfile()
+    let result.tempfile = nim#util#WriteMemfile()
     let query = a:command . " " . result.file . ";" . result.tempfile . ":" . result.line . ":" . result.col
 
     if !result.isAsync
         let jobcmdstr = g:nvim_nim_exec_nimsuggest . " " . (a:useV2 ? '--v2' : '') . " " . '--stdin' . " " . result.file
         let fullcmd = 'echo -e "' . query . '"|' . jobcmdstr
-        let result.lines = util#FilterCompletions(split(system(fullcmd), "\n"))
+        let result.lines = nim#util#FilterCompletions(split(system(fullcmd), "\n"))
         if len(result.lines) > 0
             call a:handler.run(result)
         else

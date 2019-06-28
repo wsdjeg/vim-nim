@@ -230,9 +230,9 @@ function! s:OutlineImpl.run(data) abort
                 \ }
 
     for line in a:data.lines
-        let p = nimutil#ParseV2(line)
+        let p = nim#util#ParseV2(line)
         if has_key(s:group_aliases, p.kind)
-            let renderable = nimfeatures#outline#renderable(p)
+            let renderable = nim#features#outline#renderable(p)
             call add(s:groups[s:group_aliases[p.kind]], renderable)
         endif
     endfor

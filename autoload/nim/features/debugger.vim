@@ -27,7 +27,7 @@ function! s:NimDebugger.on_exit(...)
     let s:edb_terminal_job = -2
 endfunction
 
-function! features#debugger#run()
+function! nim#features#debugger#run()
     if s:edb_terminal_job > 0
         echo "Debugger already running"
     else
@@ -45,7 +45,7 @@ function! features#debugger#run()
     endif
 endfunction
 
-function! features#debugger#stop()
+function! nim#features#debugger#stop()
     if s:edb_terminal_job > 0
         call jobstop([s:edb_terminal_job])
     else
@@ -64,27 +64,27 @@ function! s:SendCommand(cmd)
     endif
 endfunction
 
-function! features#debugger#continue()
+function! nim#features#debugger#continue()
     call s:SendCommand("c")
 endfunction
 
-function! features#debugger#stepinto()
+function! nim#features#debugger#stepinto()
     call s:SendCommand("s")
 endfunction
 
-function! features#debugger#stepover()
+function! nim#features#debugger#stepover()
     call s:SendCommand("n")
 endfunction
 
-function! features#debugger#skipcurrent()
+function! nim#features#debugger#skipcurrent()
     call s:SendCommand("f")
 endfunction
 
-function! features#debugger#ignore()
+function! nim#features#debugger#ignore()
     call s:SendCommand("i")
 endfunction
 
-function! features#debugger#togglebp()
+function! nim#features#debugger#togglebp()
     call s:SendCommand("s")
 endfunction
 

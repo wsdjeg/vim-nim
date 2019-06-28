@@ -12,7 +12,7 @@ function! s:RenameImpl.run(data) abort
     let newName = input('Rename symbol: ', oldName)
 
     for line in a:data.lines
-        let res = util#ParseV2(line)
+        let res = nim#util#ParseV2(line)
         if !s:findInProject && res.file != expand('%:p')
             continue
         endif

@@ -79,22 +79,6 @@ When you declare your on proc it gives you the highlight information for
 every usage of that proc. When your routine call fails, your syntax
 highlighting will fail too.
 
-2.1.2.Semantic highlighting                                  *NimSyntaxHLI*
-
-With the nimsuggest highlihgting it is possible to distinguish between
-different symbol types. You can specify which symbol kinds you want to
-be highlighted by hash made from their name.
-
-In case of
-
-for idx 1..10:
-    for jdx 1..0:
-        (idx * jdx).echo
-
-all cases of idx will be highlighted with their own random color and jdx
-with their own.
-
-
 
 ------------------------------------------------------------------------------
 2.2.Commands                                                *NimCommands*
